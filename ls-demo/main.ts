@@ -19,9 +19,9 @@ console.log("%c" + files.join("/n"), "color: red; font-size: 20px;");
 
 /*
 deno FormData
-deno check 
-deno lint 
+deno check
+deno lint
 deno run --watch
-deno test 
-deno bench 
+deno test
+deno bench
 */
