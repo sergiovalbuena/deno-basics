@@ -34,4 +34,51 @@ setItem(`trees_${oak.id}`, oak);
 const newTree = getItem(`trees_${oak.id}`);
 console.log(newTree);
 
+//create a new tree
+app.post("/trees", async (c) => {
+  const treeDetails = await c.req.json();
+  const tree: Tree = treeDetails;
+  setItem(`trees_${tree.id}`, tree);
+  return c.json({
+    message: `Tree ${tree.name} added successfully`,
+  });
+});
+//test
+// curl -X POST https://localhost:8000/trees \
+// - H "Content-Type: application/json" \
+// -d '{"id": "2", "name": "Pine", "age": 50, "location": "Asia"}'
+
+//get tree id
+app.get("/trees/:id", async (c) => {
+  const treeId = await c.req.param("id");
+  const tree = getItem(`trees_${treeId}`);
+  if (!tree) {
+    return c.json({
+      message: `Tree with id ${treeId} not found`,
+    });
+  }
+});
+
+app.put("/trees/:id", async (c) => {
+  const id = c.req.param("id");
+  const { name, age, location } = await c.req.json();
+  const updatedTree: Tree = { id, name, age, location };
+  setItem(`trees_${id}`, updatedTree);
+  return c.json({
+    message: `Tree ${name} updated successfully`,
+  });
+});
+
+const deleteItem = (key: string) => {
+  localStorage.removeItem(key);
+};
+
+app.delete("/trees/:id", async (c) => {
+  const id = await c.req.param("id");
+  deleteItem(`trees_${id}`);
+  return c.json({
+    message: `Tree with id ${id} deleted successfully`,
+  });
+});
+
 Deno.serve(app.fetch);
